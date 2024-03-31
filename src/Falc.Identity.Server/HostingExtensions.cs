@@ -1,3 +1,6 @@
+using Duende.IdentityServer.EntityFramework.DbContexts;
+using Falc.Identity.Server.Data;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 namespace Falc.Identity.Server;
@@ -13,10 +16,29 @@ internal static class HostingExtensions
                 // https://docs.duendesoftware.com/identityserver/v6/fundamentals/resources/api_scopes#authorization-based-on-scopes
                 options.EmitStaticAudienceClaim = true;
             })
-            .AddInMemoryIdentityResources(Config.IdentityResources)
-            .AddInMemoryApiScopes(Config.ApiScopes)
-            .AddInMemoryClients(Config.Clients)
-            .AddTestUsers(TestUsers.Users);
+            .AddConfigurationStore(options =>
+            {
+                options.ConfigureDbContext = optionsBuilder =>
+                {
+                    var postgresConnectionString = builder.Configuration.GetConnectionString("Postgres");
+                    var migrationsAssemblyName = typeof(Program).Assembly.GetName().Name;
+                    
+                    optionsBuilder.UseNpgsql(
+                        postgresConnectionString, 
+                        contextOptionsBuilder => contextOptionsBuilder.MigrationsAssembly(migrationsAssemblyName));
+                };
+            })
+            .AddOperationalStore(options =>
+            {
+                var postgresConnectionString = builder.Configuration.GetConnectionString("Postgres");
+                var migrationsAssemblyName = typeof(Program).Assembly.GetName().Name;
+                options.ConfigureDbContext = optionsBuilder =>
+                {
+                    optionsBuilder.UseNpgsql(
+                        postgresConnectionString, 
+                        contextOptionsBuilder => contextOptionsBuilder.MigrationsAssembly(migrationsAssemblyName));
+                };
+            });
 
         return builder.Build();
     }
@@ -24,6 +46,9 @@ internal static class HostingExtensions
     public static WebApplication ConfigurePipeline(this WebApplication app)
     { 
         app.UseSerilogRequestLogging();
+        app.Services
+            .MigrateDatabase<PersistedGrantDbContext>()
+            .MigrateDatabase<ConfigurationDbContext>();
     
         if (app.Environment.IsDevelopment())
         {
