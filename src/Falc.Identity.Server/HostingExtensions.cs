@@ -53,6 +53,8 @@ internal static class HostingExtensions
     public static WebApplication ConfigurePipeline(this WebApplication app)
     { 
         app.UseSerilogRequestLogging();
+
+        app.Services.MigrateDatabase<ApplicationDbContext>();
     
         if (app.Environment.IsDevelopment())
         {
