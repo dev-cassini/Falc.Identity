@@ -1,19 +1,26 @@
 // Copyright (c) Duende Software. All rights reserved.
 // See LICENSE in the project root for license information.
 
-using Duende.IdentityServer;
 using System.Reflection;
+using Duende.IdentityServer;
+using Duende.IdentityServer.Extensions;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Falc.Identity.Server.Pages.Home;
+namespace Falc.Identity.Server.Pages;
 
 [AllowAnonymous]
-public class Index : PageModel
+public class Index(IdentityServerLicense? license = null) : PageModel
 {
-    public Index(IdentityServerLicense? license = null)
+    public IActionResult OnGet()
     {
-        License = license;
+        if (User.IsAuthenticated())
+        {
+            return Page();
+        }
+
+        return Redirect("/Account/Login");
     }
 
     public string Version
@@ -23,5 +30,5 @@ public class Index : PageModel
             ?.InformationalVersion.Split('+').First()
             ?? "unavailable";
     }
-    public IdentityServerLicense? License { get; }
+    public IdentityServerLicense? License { get; } = license;
 }
