@@ -1,0 +1,25 @@
+﻿{
+  "IdentityData": {
+    "Roles": [
+      {
+        "Name": "Identity Admin"
+      }
+    ],
+    "Users": [
+      {
+        "Username": "admin",
+        "Password": "Pa$$word123",
+        "Email": "ryan.dremza@gmail.com",
+        "Roles": [
+          "Identity Admin"
+        ],
+        "Claims": [
+          {
+            "Type": "name",
+            "Value": "admin"
+          }
+        ]
+      }
+    ]
+  }
+}
