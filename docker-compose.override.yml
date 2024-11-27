@@ -1,19 +1,19 @@
 version: '3.4'
 
 services:
-  falc.identity.admin:
+  falc-identity-admin:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
   
-  falc.identity.admin.api:
+  falc-identity-admin-api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
 
-  falc.identity.sts.identity:
+  falc-identity-sts:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     volumes:

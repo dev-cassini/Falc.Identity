@@ -1,127 +1,111 @@
-version: '3.4'
+version: '3.5'
 services:
-  nginx-proxy:
-    image: jwilder/nginx-proxy
-    container_name: nginx
-    ports:
-      - '80:80'
-      - '443:443'
-    volumes:
-      - '/var/run/docker.sock:/tmp/docker.sock:ro'
-      - './shared/nginx/vhost.d:/etc/nginx/vhost.d'
-      - './shared/nginx/certs:/etc/nginx/certs:ro'
-    networks:
-      proxy: null
-      identityserverui:
-        aliases:
-          - sts.skoruba.local
-          - admin.skoruba.local
-          - admin-api.skoruba.local
-    restart: always
-  falc.identity.admin:
-    image: '${DOCKER_REGISTRY-}skoruba-duende-identityserver-admin'
+  falc-identity-admin:
     build:
       context: .
       dockerfile: src/Falc.Identity.Admin/Dockerfile
-    container_name: skoruba-duende-identityserver-admin
+    container_name: falc-identityserver-admin
     environment:
-      - VIRTUAL_HOST=admin.skoruba.local
-      - 'ConnectionStrings__ConfigurationDbConnection=Server=db;Database=IdentityServerAdmin;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
-      - 'ConnectionStrings__PersistedGrantDbConnection=Server=db;Database=IdentityServerAdmin;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
-      - 'ConnectionStrings__IdentityDbConnection=Server=db;Database=IdentityServerAdmin;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
-      - 'ConnectionStrings__AdminLogDbConnection=Server=db;Database=IdentityServerAdmin;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
-      - 'ConnectionStrings__AdminAuditLogDbConnection=Server=db;Database=IdentityServerAdmin;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
-      - 'ConnectionStrings__DataProtectionDbConnection=Server=db;Database=IdentityServerAdmin;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
-      - 'AdminConfiguration__IdentityAdminBaseUrl=https://admin.skoruba.local'
-      - 'AdminConfiguration__IdentityAdminRedirectUri=https://admin.skoruba.local/signin-oidc'
-      - 'AdminConfiguration__IdentityServerBaseUrl=https://sts.skoruba.local'
+      - 'ConnectionStrings__ConfigurationDbConnection=Host=postgres;Username=postgres;Password=password;Database=Falc.Identity;Include Error Detail=true'
+      - 'ConnectionStrings__PersistedGrantDbConnection=Host=postgres;Username=postgres;Password=password;Database=Falc.Identity;Include Error Detail=true'
+      - 'ConnectionStrings__IdentityDbConnection=Host=postgres;Username=postgres;Password=password;Database=Falc.Identity;Include Error Detail=true'
+      - 'ConnectionStrings__AdminLogDbConnection=Host=postgres;Username=postgres;Password=password;Database=Falc.Identity;Include Error Detail=true'
+      - 'ConnectionStrings__AdminAuditLogDbConnection=Host=postgres;Username=postgres;Password=password;Database=Falc.Identity;Include Error Detail=true'
+      - 'ConnectionStrings__DataProtectionDbConnection=Host=postgres;Username=postgres;Password=password;Database=Falc.Identity;Include Error Detail=true'
+      - 'AdminConfiguration__IdentityAdminBaseUrl=https://falc.admin.local'
+      - 'AdminConfiguration__IdentityAdminRedirectUri=https://falc.admin.local/signin-oidc'
+      - 'AdminConfiguration__IdentityServerBaseUrl=https://falc.sts.local'
       - AdminConfiguration__RequireHttpsMetadata=false
-      - 'IdentityServerData__Clients__0__ClientUri=https://admin.skoruba.local'
-      - 'IdentityServerData__Clients__0__RedirectUris__0=https://admin.skoruba.local/signin-oidc'
-      - 'IdentityServerData__Clients__0__FrontChannelLogoutUri=https://admin.skoruba.local/signin-oidc'
-      - 'IdentityServerData__Clients__0__PostLogoutRedirectUris__0=https://admin.skoruba.local/signout-callback-oidc'
-      - 'IdentityServerData__Clients__0__AllowedCorsOrigins__0=https://admin.skoruba.local'
-      - 'IdentityServerData__Clients__1__RedirectUris__0=https://admin-api.skoruba.local/swagger/oauth2-redirect.html'
-      - 'Serilog__WriteTo__1__Args__connectionString=Server=db;Database=IdentityServerAdmin;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
+      - 'IdentityServerData__Clients__0__ClientUri=https://falc.admin.local'
+      - 'IdentityServerData__Clients__0__RedirectUris__0=https://falc.admin.local/signin-oidc'
+      - 'IdentityServerData__Clients__0__FrontChannelLogoutUri=https://falc.admin.local/signin-oidc'
+      - 'IdentityServerData__Clients__0__PostLogoutRedirectUris__0=https://falc.admin.local/signout-callback-oidc'
+      - 'IdentityServerData__Clients__0__AllowedCorsOrigins__0=https://falc.admin.local'
+      - 'IdentityServerData__Clients__1__RedirectUris__0=https://falc.admin-api.local/swagger/oauth2-redirect.html'
+      - 'Serilog__WriteTo__1__Args__connectionString=Host=postgres;Username=postgres;Password=password;Database=Falc.Identity;Include Error Detail=true'
       - DockerConfiguration__UpdateCaCertificate=true
       - ASPNETCORE_ENVIRONMENT=Development
-    command: dotnet Falc.Identity.Admin.dll /seed
+      - ASPNETCORE_URLS=http://+:80
+    command: /seed
     depends_on:
-      - db
-      - falc.identity.sts.identity
+      - falc-identity-sts
     volumes:
       - './shared/serilog.json:/app/serilog.json'
       - './shared/identitydata.json:/app/identitydata.json'
       - './shared/identityserverdata.json:/app/identityserverdata.json'
-      - './shared/nginx/certs/cacerts.crt:/usr/local/share/ca-certificates/cacerts.crt'
     networks:
-      identityserverui: null
-  falc.identity.admin.api:
-    image: '${DOCKER_REGISTRY-}skoruba-duende-identityserver-admin-api'
+      - falc
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.falc-identity-admin.rule=Host(`falc.admin.local`)"
+      - "traefik.http.routers.falc-identity-admin.entrypoints=websecure"
+      - "traefik.http.routers.falc-identity-admin.tls=true"
+      - "traefik.http.routers.http-falc-identity-admin.rule=Host(`falc.admin.local`)"
+      - "traefik.http.routers.http-falc-identity-admin.entrypoints=web"
+      - "traefik.tags=falc"
+      - "traefik.docker.network=falc"
+
+  falc-identity-admin-api:
     build:
       context: .
       dockerfile: src/Falc.Identity.Admin.Api/Dockerfile
-    container_name: skoruba-duende-identityserver-admin-api
+    container_name: falc-identityserver-admin-api
     environment:
-      - VIRTUAL_HOST=admin-api.skoruba.local
+      - 'ConnectionStrings__ConfigurationDbConnection=Host=postgres;Username=postgres;Password=password;Database=Falc.Identity;Include Error Detail=true'
+      - 'ConnectionStrings__PersistedGrantDbConnection=Host=postgres;Username=postgres;Password=password;Database=Falc.Identity;Include Error Detail=true'
+      - 'ConnectionStrings__IdentityDbConnection=Host=postgres;Username=postgres;Password=password;Database=Falc.Identity;Include Error Detail=true'
+      - 'ConnectionStrings__AdminLogDbConnection=Host=postgres;Username=postgres;Password=password;Database=Falc.Identity;Include Error Detail=true'
+      - 'ConnectionStrings__AdminAuditLogDbConnection=Host=postgres;Username=postgres;Password=password;Database=Falc.Identity;Include Error Detail=true'
+      - 'ConnectionStrings__DataProtectionDbConnection=Host=postgres;Username=postgres;Password=password;Database=Falc.Identity;Include Error Detail=true'
       - AdminApiConfiguration__RequireHttpsMetadata=false
-      - 'AdminApiConfiguration__ApiBaseUrl=https://admin-api.skoruba.local'
-      - 'AdminApiConfiguration__IdentityServerBaseUrl=https://sts.skoruba.local'
-      - 'ConnectionStrings__ConfigurationDbConnection=Server=db;Database=IdentityServerAdmin;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
-      - 'ConnectionStrings__PersistedGrantDbConnection=Server=db;Database=IdentityServerAdmin;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
-      - 'ConnectionStrings__IdentityDbConnection=Server=db;Database=IdentityServerAdmin;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
-      - 'ConnectionStrings__AdminLogDbConnection=Server=db;Database=IdentityServerAdmin;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
-      - 'ConnectionStrings__AdminAuditLogDbConnection=Server=db;Database=IdentityServerAdmin;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
-      - 'ConnectionStrings__DataProtectionDbConnection=Server=db;Database=IdentityServerAdmin;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
+      - 'AdminApiConfiguration__ApiBaseUrl=https://falc.admin-api.local'
+      - 'AdminApiConfiguration__IdentityServerBaseUrl=https://falc.sts.local'
       - DockerConfiguration__UpdateCaCertificate=true
       - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
     volumes:
       - './shared/serilog.json:/app/serilog.json'
-      - './shared/nginx/certs/cacerts.crt:/usr/local/share/ca-certificates/cacerts.crt'
     networks:
-      identityserverui: null
-  falc.identity.sts.identity:
-    image: '${DOCKER_REGISTRY-}skoruba-duende-identityserver-sts-identity'
+      - falc
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.falc-identity-admin-api.rule=Host(`falc.admin-api.local`)"
+      - "traefik.http.routers.falc-identity-admin-api.entrypoints=websecure"
+      - "traefik.http.routers.falc-identity-admin-api.tls=true"
+      - "traefik.http.routers.http-falc-identity-admin-api.rule=Host(`falc.admin-api.local`)"
+      - "traefik.http.routers.http-falc-identity-admin-api.entrypoints=web"
+      - "traefik.tags=falc"
+      - "traefik.docker.network=falc"
+
+  falc-identity-sts:
     build:
       context: .
       dockerfile: src/Falc.Identity.STS.Identity/Dockerfile
-    container_name: skoruba-duende-identityserver-sts-identity
+    container_name: falc-identityserver-sts-identity
     environment:
-      - VIRTUAL_HOST=sts.skoruba.local
-      - 'ConnectionStrings__ConfigurationDbConnection=Server=db;Database=IdentityServerAdmin;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
-      - 'ConnectionStrings__PersistedGrantDbConnection=Server=db;Database=IdentityServerAdmin;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
-      - 'ConnectionStrings__IdentityDbConnection=Server=db;Database=IdentityServerAdmin;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
-      - 'ConnectionStrings__DataProtectionDbConnection=Server=db;Database=IdentityServerAdmin;User Id=sa;Password=${DB_PASSWORD:-Password_123};MultipleActiveResultSets=true'
-      - 'AdminConfiguration__IdentityAdminBaseUrl=https://admin.skoruba.local'
-      - 'AdvancedConfiguration__IssuerUri=https://sts.skoruba.local'
+      - 'ConnectionStrings__ConfigurationDbConnection=Host=postgres;Username=postgres;Password=password;Database=Falc.Identity;Include Error Detail=true'
+      - 'ConnectionStrings__PersistedGrantDbConnection=Host=postgres;Username=postgres;Password=password;Database=Falc.Identity;Include Error Detail=true'
+      - 'ConnectionStrings__IdentityDbConnection=Host=postgres;Username=postgres;Password=password;Database=Falc.Identity;Include Error Detail=true'
+      - 'ConnectionStrings__DataProtectionDbConnection=Host=postgres;Username=postgres;Password=password;Database=Falc.Identity;Include Error Detail=true'
+      - 'AdminConfiguration__IdentityAdminBaseUrl=https://falc.admin.local'
+      - 'AdvancedConfiguration__IssuerUri=https://falc.sts.local'
       - DockerConfiguration__UpdateCaCertificate=true
       - ASPNETCORE_ENVIRONMENT=Development
-    depends_on:
-      - db
+      - ASPNETCORE_URLS=http://+:80
     volumes:
       - './shared/serilog.json:/app/serilog.json'
-      - './shared/nginx/certs/cacerts.crt:/usr/local/share/ca-certificates/cacerts.crt'
     networks:
-      identityserverui:
-        aliases:
-          - sts.skoruba.local
-  db:
-    image: 'mcr.microsoft.com/mssql/server:2017-CU20-ubuntu-16.04'
-    ports:
-      - '7900:1433'
-    container_name: skoruba-duende-identityserver-db
-    environment:
-      SA_PASSWORD: '${DB_PASSWORD:-Password_123}'
-      ACCEPT_EULA: 'Y'
-    volumes:
-      - 'dbdata:/var/opt/mssql'
-    networks:
-      identityserverui: null
-volumes:
-  dbdata:
-    driver: local
+      - falc
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.falc-identity-sts.rule=Host(`falc.sts.local`)"
+      - "traefik.http.routers.falc-identity-sts.entrypoints=websecure"
+      - "traefik.http.routers.falc-identity-sts.tls=true"
+      - "traefik.http.routers.http-falc-identity-sts.rule=Host(`falc.sts.local`)"
+      - "traefik.http.routers.http-falc-identity-sts.entrypoints=web"
+      - "traefik.tags=falc"
+      - "traefik.docker.network=falc"
+
 networks:
-  proxy:
-    driver: bridge
-  identityserverui:
-    driver: bridge
+  falc:
+    external: true
