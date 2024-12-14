@@ -19,6 +19,7 @@ using Skoruba.Duende.IdentityServer.Admin.UI.Helpers.DependencyInjection;
 using Skoruba.Duende.IdentityServer.Shared.Configuration.Helpers;
 using Falc.Identity.Shared.Dtos;
 using Falc.Identity.Shared.Dtos.Identity;
+using Microsoft.IdentityModel.Logging;
 
 namespace Falc.Identity.Admin
 {
@@ -51,6 +52,8 @@ namespace Falc.Identity.Admin
 
             // Add email senders which is currently setup for SendGrid and SMTP
             services.AddEmailSenders(Configuration);
+
+            IdentityModelEventSource.ShowPII = true;
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)

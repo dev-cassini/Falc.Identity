@@ -74,6 +74,9 @@ namespace Falc.Identity.STS.Identity.Helpers
             }
             else if (certificateConfiguration.UseSigningCertificatePfxFile)
             {
+                Console.WriteLine($"UseSigningCertificatePfxFile: {certificateConfiguration.UseSigningCertificatePfxFile}");
+                Console.WriteLine($"SigningCertificatePfxFilePath: {certificateConfiguration.SigningCertificatePfxFilePath}");
+                Console.WriteLine($"SigningCertificatePfxFilePassword: {certificateConfiguration.SigningCertificatePfxFilePassword}");
                 if (string.IsNullOrWhiteSpace(certificateConfiguration.SigningCertificatePfxFilePath))
                 {
                     throw new Exception(SigningCertificatePathIsNotSpecified);

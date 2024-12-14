@@ -8,7 +8,7 @@
     "Users": [
       {
         "Username": "admin",
-        "Password": "Pa4260word123",
+        "Password": "Pa$$word123",
         "Email": "ryan.dremza@gmail.com",
         "Roles": [
           "Identity Admin"

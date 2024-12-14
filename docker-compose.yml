@@ -12,17 +12,19 @@ services:
       - 'ConnectionStrings__AdminLogDbConnection=Host=postgres;Username=postgres;Password=password;Database=Falc.Identity;Include Error Detail=true'
       - 'ConnectionStrings__AdminAuditLogDbConnection=Host=postgres;Username=postgres;Password=password;Database=Falc.Identity;Include Error Detail=true'
       - 'ConnectionStrings__DataProtectionDbConnection=Host=postgres;Username=postgres;Password=password;Database=Falc.Identity;Include Error Detail=true'
-      - 'AdminConfiguration__IdentityAdminBaseUrl=https://falc.admin.local'
-      - 'AdminConfiguration__IdentityAdminRedirectUri=https://falc.admin.local/signin-oidc'
-      - 'AdminConfiguration__IdentityServerBaseUrl=https://falc.sts.local'
+      - 'AdminConfiguration__IdentityAdminBaseUrl=http://falc.admin.localhost'
+      - 'AdminConfiguration__IdentityAdminRedirectUri=http://falc.admin.localhost/signin-oidc'
+      - 'AdminConfiguration__IdentityServerBaseUrl=http://falc.sts.localhost'
       - AdminConfiguration__RequireHttpsMetadata=false
-      - 'IdentityServerData__Clients__0__ClientUri=https://falc.admin.local'
-      - 'IdentityServerData__Clients__0__RedirectUris__0=https://falc.admin.local/signin-oidc'
-      - 'IdentityServerData__Clients__0__FrontChannelLogoutUri=https://falc.admin.local/signin-oidc'
-      - 'IdentityServerData__Clients__0__PostLogoutRedirectUris__0=https://falc.admin.local/signout-callback-oidc'
-      - 'IdentityServerData__Clients__0__AllowedCorsOrigins__0=https://falc.admin.local'
-      - 'IdentityServerData__Clients__1__RedirectUris__0=https://falc.admin-api.local/swagger/oauth2-redirect.html'
+      - 'IdentityServerData__Clients__0__ClientUri=https://falc.admin.localhost'
+      - 'IdentityServerData__Clients__0__RedirectUris__0=https://falc.admin.localhost/signin-oidc'
+      - 'IdentityServerData__Clients__0__FrontChannelLogoutUri=https://falc.admin.localhost/signin-oidc'
+      - 'IdentityServerData__Clients__0__PostLogoutRedirectUris__0=https://falc.admin.localhost/signout-callback-oidc'
+      - 'IdentityServerData__Clients__0__AllowedCorsOrigins__0=https://falc.admin.localhost'
+      - 'IdentityServerData__Clients__1__RedirectUris__0=https://falc.admin-api.localhost/swagger/oauth2-redirect.html'
       - 'Serilog__WriteTo__1__Args__connectionString=Host=postgres;Username=postgres;Password=password;Database=Falc.Identity;Include Error Detail=true'
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=Password123!
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/app/ca-certificates/identity.pfx
       - DockerConfiguration__UpdateCaCertificate=true
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
@@ -33,14 +35,15 @@ services:
       - './shared/serilog.json:/app/serilog.json'
       - './shared/identitydata.json:/app/identitydata.json'
       - './shared/identityserverdata.json:/app/identityserverdata.json'
+      - './shared/identity.pfx:/app/ca-certificates/identity.pfx'
     networks:
       - falc
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.falc-identity-admin.rule=Host(`falc.admin.local`)"
+      - "traefik.http.routers.falc-identity-admin.rule=Host(`falc.admin.localhost`)"
       - "traefik.http.routers.falc-identity-admin.entrypoints=websecure"
       - "traefik.http.routers.falc-identity-admin.tls=true"
-      - "traefik.http.routers.http-falc-identity-admin.rule=Host(`falc.admin.local`)"
+      - "traefik.http.routers.http-falc-identity-admin.rule=Host(`falc.admin.localhost`)"
       - "traefik.http.routers.http-falc-identity-admin.entrypoints=web"
       - "traefik.tags=falc"
       - "traefik.docker.network=falc"
@@ -58,8 +61,8 @@ services:
       - 'ConnectionStrings__AdminAuditLogDbConnection=Host=postgres;Username=postgres;Password=password;Database=Falc.Identity;Include Error Detail=true'
       - 'ConnectionStrings__DataProtectionDbConnection=Host=postgres;Username=postgres;Password=password;Database=Falc.Identity;Include Error Detail=true'
       - AdminApiConfiguration__RequireHttpsMetadata=false
-      - 'AdminApiConfiguration__ApiBaseUrl=https://falc.admin-api.local'
-      - 'AdminApiConfiguration__IdentityServerBaseUrl=https://falc.sts.local'
+      - 'AdminApiConfiguration__ApiBaseUrl=https://falc.admin-api.localhost'
+      - 'AdminApiConfiguration__IdentityServerBaseUrl=https://falc.sts.localhost'
       - DockerConfiguration__UpdateCaCertificate=true
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
@@ -69,10 +72,10 @@ services:
       - falc
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.falc-identity-admin-api.rule=Host(`falc.admin-api.local`)"
+      - "traefik.http.routers.falc-identity-admin-api.rule=Host(`falc.admin-api.localhost`)"
       - "traefik.http.routers.falc-identity-admin-api.entrypoints=websecure"
       - "traefik.http.routers.falc-identity-admin-api.tls=true"
-      - "traefik.http.routers.http-falc-identity-admin-api.rule=Host(`falc.admin-api.local`)"
+      - "traefik.http.routers.http-falc-identity-admin-api.rule=Host(`falc.admin-api.localhost`)"
       - "traefik.http.routers.http-falc-identity-admin-api.entrypoints=web"
       - "traefik.tags=falc"
       - "traefik.docker.network=falc"
@@ -87,21 +90,27 @@ services:
       - 'ConnectionStrings__PersistedGrantDbConnection=Host=postgres;Username=postgres;Password=password;Database=Falc.Identity;Include Error Detail=true'
       - 'ConnectionStrings__IdentityDbConnection=Host=postgres;Username=postgres;Password=password;Database=Falc.Identity;Include Error Detail=true'
       - 'ConnectionStrings__DataProtectionDbConnection=Host=postgres;Username=postgres;Password=password;Database=Falc.Identity;Include Error Detail=true'
-      - 'AdminConfiguration__IdentityAdminBaseUrl=https://falc.admin.local'
-      - 'AdvancedConfiguration__IssuerUri=https://falc.sts.local'
+      - 'AdminConfiguration__IdentityAdminBaseUrl=http://falc.admin.localhost'
+      - 'AdvancedConfiguration__IssuerUri=http://falc.sts.localhost'
+      - CertificateConfiguration__UseSigningCertificatePfxFile=true
+      - CertificateConfiguration__SigningCertificatePfxFilePath=/app/ca-certificates/identity.pfx
+      - CertificateConfiguration__SigningCertificatePfxFilePassword=Password123!
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=Password123!
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/app/ca-certificates/identity.pfx
       - DockerConfiguration__UpdateCaCertificate=true
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
     volumes:
       - './shared/serilog.json:/app/serilog.json'
+      - './shared/identity.pfx:/app/ca-certificates/identity.pfx'
     networks:
       - falc
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.falc-identity-sts.rule=Host(`falc.sts.local`)"
+      - "traefik.http.routers.falc-identity-sts.rule=Host(`falc.sts.localhost`)"
       - "traefik.http.routers.falc-identity-sts.entrypoints=websecure"
       - "traefik.http.routers.falc-identity-sts.tls=true"
-      - "traefik.http.routers.http-falc-identity-sts.rule=Host(`falc.sts.local`)"
+      - "traefik.http.routers.http-falc-identity-sts.rule=Host(`falc.sts.localhost`)"
       - "traefik.http.routers.http-falc-identity-sts.entrypoints=web"
       - "traefik.tags=falc"
       - "traefik.docker.network=falc"
