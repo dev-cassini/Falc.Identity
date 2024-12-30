@@ -13,8 +13,4 @@
         <PackageReference Include="Skoruba.Duende.IdentityServer.Admin.EntityFramework.Configuration" Version="2.3.0" />
     </ItemGroup>
 
-    <ItemGroup>
-        <Folder Include="EntityFramework\" />
-    </ItemGroup>
-
 </Project>

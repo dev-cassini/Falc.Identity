@@ -12,6 +12,7 @@ services:
       - 'ConnectionStrings__AdminLogDbConnection=Host=postgres;Username=postgres;Password=password;Database=Falc.Identity;Include Error Detail=true'
       - 'ConnectionStrings__AdminAuditLogDbConnection=Host=postgres;Username=postgres;Password=password;Database=Falc.Identity;Include Error Detail=true'
       - 'ConnectionStrings__DataProtectionDbConnection=Host=postgres;Username=postgres;Password=password;Database=Falc.Identity;Include Error Detail=true'
+      - 'ConnectionStrings__Rmq=amqp://guest:guest@rmq'
       - 'AdminConfiguration__IdentityAdminBaseUrl=https://admin.falc.local'
       - 'AdminConfiguration__IdentityAdminRedirectUri=https://admin.falc.local/signin-oidc'
       - 'AdminConfiguration__IdentityServerBaseUrl=https://sts.falc.local'
@@ -84,6 +85,7 @@ services:
       - 'ConnectionStrings__PersistedGrantDbConnection=Host=postgres;Username=postgres;Password=password;Database=Falc.Identity;Include Error Detail=true'
       - 'ConnectionStrings__IdentityDbConnection=Host=postgres;Username=postgres;Password=password;Database=Falc.Identity;Include Error Detail=true'
       - 'ConnectionStrings__DataProtectionDbConnection=Host=postgres;Username=postgres;Password=password;Database=Falc.Identity;Include Error Detail=true'
+      - 'ConnectionStrings__Rmq=amqp://guest:guest@rmq'
       - 'AdminConfiguration__IdentityAdminBaseUrl=https://admin.falc.local'
       - 'IdentityServerOptions__IssuerUri=https://sts.falc.local'
       - DockerConfiguration__UpdateCaCertificate=true

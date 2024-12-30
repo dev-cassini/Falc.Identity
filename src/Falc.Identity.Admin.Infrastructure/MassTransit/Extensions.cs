@@ -1,4 +1,3 @@
-using System.Reflection;
 using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,8 +19,6 @@ internal static class Extensions
                     factoryConfigurator.Host(rmqUri);
                     factoryConfigurator.ConfigureEndpoints(context, new CustomEndpointNameFormatter());
                 });
-                
-                configurator.AddConsumers(Assembly.GetExecutingAssembly());
             });
         
         return serviceCollection;

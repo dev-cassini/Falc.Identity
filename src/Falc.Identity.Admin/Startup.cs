@@ -11,6 +11,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Skoruba.AuditLogging.EntityFramework.Entities;
 using Falc.Identity.Admin.Helpers;
+using Falc.Identity.Admin.Infrastructure;
 using Falc.Identity.Admin.Infrastructure.EntityFramework.DbContexts;
 using Falc.Identity.Admin.Infrastructure.EntityFramework.Entities.Identity;
 using Skoruba.Duende.IdentityServer.Admin.UI.Helpers.ApplicationBuilder;
@@ -37,7 +38,8 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         // Adds the Duende IdentityServer Admin UI with custom options.
-        services.AddIdentityServerAdminUI<AdminIdentityDbContext, IdentityServerConfigurationDbContext, IdentityServerPersistedGrantDbContext,
+        services
+            .AddIdentityServerAdminUI<AdminIdentityDbContext, IdentityServerConfigurationDbContext, IdentityServerPersistedGrantDbContext,
             AdminLogDbContext, AdminAuditLogDbContext, AuditLog, IdentityServerDataProtectionDbContext,
             UserIdentity, UserIdentityRole, UserIdentityUserClaim, UserIdentityUserRole,
             UserIdentityUserLogin, UserIdentityRoleClaim, UserIdentityUserToken, string,
@@ -50,6 +52,7 @@ public class Startup
 
         // Add email senders which is currently setup for SendGrid and SMTP
         services.AddEmailSenders(Configuration);
+        services.AddInfrastructure(Configuration);
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
