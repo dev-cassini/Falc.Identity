@@ -7,8 +7,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Falc.Identity.Admin.EntityFramework.Shared.DbContexts;
-using Falc.Identity.Admin.EntityFramework.Shared.Entities.Identity;
+using Falc.Identity.Admin.Infrastructure.EntityFramework.DbContexts;
+using Falc.Identity.Admin.Infrastructure.EntityFramework.Entities.Identity;
 using Skoruba.Duende.IdentityServer.Admin.UI.Api.Helpers;
 using Skoruba.Duende.IdentityServer.Admin.UI.Api.Middlewares;
 

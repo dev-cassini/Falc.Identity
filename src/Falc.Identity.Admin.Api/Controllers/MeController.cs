@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Duende.IdentityServer.Extensions;
 using Falc.Identity.Admin.Api.Dtos;
-using Falc.Identity.Admin.EntityFramework.Shared.Entities.Identity;
+using Falc.Identity.Admin.Infrastructure.EntityFramework.Entities.Identity;
 using IdentityModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

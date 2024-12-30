@@ -12,8 +12,9 @@ using Microsoft.Extensions.Hosting;
 using NSwag.AspNetCore;
 using Skoruba.AuditLogging.EntityFramework.Entities;
 using Falc.Identity.Admin.Api.Configuration;
-using Falc.Identity.Admin.EntityFramework.Shared.DbContexts;
-using Falc.Identity.Admin.EntityFramework.Shared.Entities.Identity;
+using Falc.Identity.Admin.Infrastructure;
+using Falc.Identity.Admin.Infrastructure.EntityFramework.DbContexts;
+using Falc.Identity.Admin.Infrastructure.EntityFramework.Entities.Identity;
 using Skoruba.Duende.IdentityServer.Admin.UI.Api.Configuration;
 using Skoruba.Duende.IdentityServer.Admin.UI.Api.Helpers;
 using Skoruba.Duende.IdentityServer.Shared.Configuration.Helpers;
@@ -53,7 +54,8 @@ public class Startup
         // Add authorization services
         RegisterAuthorization(services);
             
-        services.AddIdentityServerAdminApi<AdminIdentityDbContext, IdentityServerConfigurationDbContext, IdentityServerPersistedGrantDbContext, IdentityServerDataProtectionDbContext,AdminLogDbContext, AdminAuditLogDbContext, AuditLog,
+        services
+            .AddIdentityServerAdminApi<AdminIdentityDbContext, IdentityServerConfigurationDbContext, IdentityServerPersistedGrantDbContext, IdentityServerDataProtectionDbContext,AdminLogDbContext, AdminAuditLogDbContext, AuditLog,
             IdentityUserDto, IdentityRoleDto, UserIdentity, UserIdentityRole, string, UserIdentityUserClaim, UserIdentityUserRole,
             UserIdentityUserLogin, UserIdentityRoleClaim, UserIdentityUserToken,
             IdentityUsersDto, IdentityRolesDto, IdentityUserRolesDto,
@@ -63,6 +65,7 @@ public class Startup
         services.AddSwaggerServices(adminApiConfiguration);
             
         services.AddIdSHealthChecks<IdentityServerConfigurationDbContext, IdentityServerPersistedGrantDbContext, AdminIdentityDbContext, AdminLogDbContext, AdminAuditLogDbContext, IdentityServerDataProtectionDbContext>(Configuration, adminApiConfiguration);
+        services.AddInfrastructure(Configuration);
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env, AdminApiConfiguration adminApiConfiguration)
