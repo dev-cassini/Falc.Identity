@@ -8,10 +8,8 @@ ARG TARGETARCH
 WORKDIR /src
 COPY ["src/Falc.Identity.Admin.Api/Falc.Identity.Admin.Api.csproj", "src/Falc.Identity.Admin.Api/"]
 COPY ["src/Falc.Identity.Admin.EntityFramework.Shared/Falc.Identity.Admin.EntityFramework.Shared.csproj", "src/Falc.Identity.Admin.EntityFramework.Shared/"]
-COPY ["src/Falc.Identity.Admin.EntityFramework.SqlServer/Falc.Identity.Admin.EntityFramework.SqlServer.csproj", "src/Falc.Identity.Admin.EntityFramework.SqlServer/"]
 COPY ["src/Falc.Identity.Shared/Falc.Identity.Shared.csproj", "src/Falc.Identity.Shared/"]
 COPY ["src/Falc.Identity.Admin.EntityFramework.PostgreSQL/Falc.Identity.Admin.EntityFramework.PostgreSQL.csproj", "src/Falc.Identity.Admin.EntityFramework.PostgreSQL/"]
-COPY ["src/Falc.Identity.Admin.EntityFramework.MySql/Falc.Identity.Admin.EntityFramework.MySql.csproj", "src/Falc.Identity.Admin.EntityFramework.MySql/"]
 RUN dotnet restore -a $TARGETARCH "src/Falc.Identity.Admin.Api/Falc.Identity.Admin.Api.csproj"
 COPY . .
 WORKDIR "/src/src/Falc.Identity.Admin.Api"

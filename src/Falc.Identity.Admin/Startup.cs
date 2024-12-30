@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0.
 
 using System.IdentityModel.Tokens.Jwt;
+using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -9,10 +10,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Skoruba.AuditLogging.EntityFramework.Entities;
-using Falc.Identity.Admin.Configuration.Database;
 using Falc.Identity.Admin.EntityFramework.Shared.DbContexts;
 using Falc.Identity.Admin.EntityFramework.Shared.Entities.Identity;
-using Falc.Identity.Admin.EntityFramework.Shared.Extensions;
 using Falc.Identity.Admin.Helpers;
 using Skoruba.Duende.IdentityServer.Admin.UI.Helpers.ApplicationBuilder;
 using Skoruba.Duende.IdentityServer.Admin.UI.Helpers.DependencyInjection;
@@ -20,71 +19,72 @@ using Skoruba.Duende.IdentityServer.Shared.Configuration.Helpers;
 using Falc.Identity.Shared.Dtos;
 using Falc.Identity.Shared.Dtos.Identity;
 
-namespace Falc.Identity.Admin
+namespace Falc.Identity.Admin;
+
+using PostgreSQLMigrationAssembly = Falc.Identity.Admin.EntityFramework.PostgreSQL.Helpers.MigrationAssembly;
+    
+public class Startup
 {
-    public class Startup
+    public Startup(IWebHostEnvironment env, IConfiguration configuration)
     {
-        public Startup(IWebHostEnvironment env, IConfiguration configuration)
-        {
-            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
-            HostingEnvironment = env;
-            Configuration = configuration;
-        }
+        JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+        HostingEnvironment = env;
+        Configuration = configuration;
+    }
 
-        public IConfiguration Configuration { get; }
+    public IConfiguration Configuration { get; }
 
-        public IWebHostEnvironment HostingEnvironment { get; }
+    public IWebHostEnvironment HostingEnvironment { get; }
 
-        public void ConfigureServices(IServiceCollection services)
-        {
-            // Adds the Duende IdentityServer Admin UI with custom options.
-            services.AddIdentityServerAdminUI<AdminIdentityDbContext, IdentityServerConfigurationDbContext, IdentityServerPersistedGrantDbContext,
+    public void ConfigureServices(IServiceCollection services)
+    {
+        // Adds the Duende IdentityServer Admin UI with custom options.
+        services.AddIdentityServerAdminUI<AdminIdentityDbContext, IdentityServerConfigurationDbContext, IdentityServerPersistedGrantDbContext,
             AdminLogDbContext, AdminAuditLogDbContext, AuditLog, IdentityServerDataProtectionDbContext,
-                UserIdentity, UserIdentityRole, UserIdentityUserClaim, UserIdentityUserRole,
-                UserIdentityUserLogin, UserIdentityRoleClaim, UserIdentityUserToken, string,
-                IdentityUserDto, IdentityRoleDto, IdentityUsersDto, IdentityRolesDto, IdentityUserRolesDto,
-                IdentityUserClaimsDto, IdentityUserProviderDto, IdentityUserProvidersDto, IdentityUserChangePasswordDto,
-                IdentityRoleClaimsDto, IdentityUserClaimDto, IdentityRoleClaimDto>(ConfigureUIOptions);
+            UserIdentity, UserIdentityRole, UserIdentityUserClaim, UserIdentityUserRole,
+            UserIdentityUserLogin, UserIdentityRoleClaim, UserIdentityUserToken, string,
+            IdentityUserDto, IdentityRoleDto, IdentityUsersDto, IdentityRolesDto, IdentityUserRolesDto,
+            IdentityUserClaimsDto, IdentityUserProviderDto, IdentityUserProvidersDto, IdentityUserChangePasswordDto,
+            IdentityRoleClaimsDto, IdentityUserClaimDto, IdentityRoleClaimDto>(ConfigureUIOptions);
 
-            // Monitor changes in Admin UI views
-            services.AddAdminUIRazorRuntimeCompilation(HostingEnvironment);
+        // Monitor changes in Admin UI views
+        services.AddAdminUIRazorRuntimeCompilation(HostingEnvironment);
 
-            // Add email senders which is currently setup for SendGrid and SMTP
-            services.AddEmailSenders(Configuration);
-        }
+        // Add email senders which is currently setup for SendGrid and SMTP
+        services.AddEmailSenders(Configuration);
+    }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
+    {
+        app.UseRouting();
+
+        app.UseIdentityServerAdminUI();
+
+        app.UseEndpoints(endpoint =>
         {
-            app.UseRouting();
+            endpoint.MapIdentityServerAdminUI();
+            endpoint.MapIdentityServerAdminUIHealthChecks();
+        });
+    }
 
-            app.UseIdentityServerAdminUI();
-
-            app.UseEndpoints(endpoint =>
-            {
-                endpoint.MapIdentityServerAdminUI();
-                endpoint.MapIdentityServerAdminUIHealthChecks();
-            });
-        }
-
-        public virtual void ConfigureUIOptions(IdentityServerAdminUIOptions options)
+    public virtual void ConfigureUIOptions(IdentityServerAdminUIOptions options)
+    {
+        // Applies configuration from appsettings.
+        options.BindConfiguration(Configuration);
+        if (HostingEnvironment.IsDevelopment())
         {
-            // Applies configuration from appsettings.
-            options.BindConfiguration(Configuration);
-            if (HostingEnvironment.IsDevelopment())
-            {
-                options.Security.UseDeveloperExceptionPage = true;
-            }
-            else
-            {
-                options.Security.UseHsts = true;
-            }
-
-            // Set migration assembly for application of db migrations
-            var migrationsAssembly = MigrationAssemblyConfiguration.GetMigrationAssemblyByProvider(options.DatabaseProvider);
-            options.DatabaseMigrations.SetMigrationsAssemblies(migrationsAssembly);
-
-            // Use production DbContexts and auth services.
-            options.Testing.IsStaging = false;
+            options.Security.UseDeveloperExceptionPage = true;
         }
+        else
+        {
+            options.Security.UseHsts = true;
+        }
+
+        // Set migration assembly for application of db migrations
+        var migrationsAssembly = typeof(PostgreSQLMigrationAssembly).GetTypeInfo().Assembly.GetName().Name;
+        options.DatabaseMigrations.SetMigrationsAssemblies(migrationsAssembly);
+
+        // Use production DbContexts and auth services.
+        options.Testing.IsStaging = false;
     }
 }

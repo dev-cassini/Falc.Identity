@@ -55,6 +55,7 @@ services:
       - 'ConnectionStrings__AdminLogDbConnection=Host=postgres;Username=postgres;Password=password;Database=Falc.Identity;Include Error Detail=true'
       - 'ConnectionStrings__AdminAuditLogDbConnection=Host=postgres;Username=postgres;Password=password;Database=Falc.Identity;Include Error Detail=true'
       - 'ConnectionStrings__DataProtectionDbConnection=Host=postgres;Username=postgres;Password=password;Database=Falc.Identity;Include Error Detail=true'
+      - 'ConnectionStrings__Rmq=amqp://guest:guest@rmq'
       - AdminApiConfiguration__RequireHttpsMetadata=false
       - 'AdminApiConfiguration__ApiBaseUrl=https://admin-api.falc.local'
       - 'AdminApiConfiguration__IdentityServerBaseUrl=https://sts.falc.local'
