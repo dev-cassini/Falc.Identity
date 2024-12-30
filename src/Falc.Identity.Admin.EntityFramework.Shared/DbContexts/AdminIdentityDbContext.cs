@@ -6,34 +6,31 @@ using Microsoft.EntityFrameworkCore;
 using Falc.Identity.Admin.EntityFramework.Shared.Configuration.Schema;
 using Falc.Identity.Admin.EntityFramework.Shared.Entities.Identity;
 
-namespace Falc.Identity.Admin.EntityFramework.Shared.DbContexts
+namespace Falc.Identity.Admin.EntityFramework.Shared.DbContexts;
+
+public class AdminIdentityDbContext(
+    DbContextOptions<AdminIdentityDbContext> options,
+    IdentityTableConfiguration schemaConfiguration = null)
+    : IdentityDbContext<UserIdentity, UserIdentityRole, string, UserIdentityUserClaim, UserIdentityUserRole,
+        UserIdentityUserLogin, UserIdentityRoleClaim, UserIdentityUserToken>(options)
 {
-    public class AdminIdentityDbContext : IdentityDbContext<UserIdentity, UserIdentityRole, string, UserIdentityUserClaim, UserIdentityUserRole, UserIdentityUserLogin, UserIdentityRoleClaim, UserIdentityUserToken>
+    private readonly IdentityTableConfiguration _schemaConfiguration = schemaConfiguration ?? new IdentityTableConfiguration();
+
+    protected override void OnModelCreating(ModelBuilder builder)
     {
-        private readonly IdentityTableConfiguration _schemaConfiguration;
+        base.OnModelCreating(builder);
 
-        public AdminIdentityDbContext(DbContextOptions<AdminIdentityDbContext> options, IdentityTableConfiguration schemaConfiguration = null) : base(options)
-        {
-            _schemaConfiguration = schemaConfiguration ?? new IdentityTableConfiguration();
-        }
+        ConfigureIdentityContext(builder);
+    }
 
-        protected override void OnModelCreating(ModelBuilder builder)
-        {
-            base.OnModelCreating(builder);
-
-            ConfigureIdentityContext(builder);
-        }
-
-        private void ConfigureIdentityContext(ModelBuilder builder)
-        {
-            builder.Entity<UserIdentityRole>().ToTable(_schemaConfiguration.IdentityRoles);
-            builder.Entity<UserIdentityRoleClaim>().ToTable(_schemaConfiguration.IdentityRoleClaims);
-            builder.Entity<UserIdentityUserRole>().ToTable(_schemaConfiguration.IdentityUserRoles);
-
-            builder.Entity<UserIdentity>().ToTable(_schemaConfiguration.IdentityUsers);
-            builder.Entity<UserIdentityUserLogin>().ToTable(_schemaConfiguration.IdentityUserLogins);
-            builder.Entity<UserIdentityUserClaim>().ToTable(_schemaConfiguration.IdentityUserClaims);
-            builder.Entity<UserIdentityUserToken>().ToTable(_schemaConfiguration.IdentityUserTokens);
-        }
+    private void ConfigureIdentityContext(ModelBuilder builder)
+    {
+        builder.Entity<UserIdentityRole>().ToTable(_schemaConfiguration.IdentityRoles);
+        builder.Entity<UserIdentityRoleClaim>().ToTable(_schemaConfiguration.IdentityRoleClaims);
+        builder.Entity<UserIdentityUserRole>().ToTable(_schemaConfiguration.IdentityUserRoles);
+        builder.Entity<UserIdentity>().ToTable(_schemaConfiguration.IdentityUsers);
+        builder.Entity<UserIdentityUserLogin>().ToTable(_schemaConfiguration.IdentityUserLogins);
+        builder.Entity<UserIdentityUserClaim>().ToTable(_schemaConfiguration.IdentityUserClaims);
+        builder.Entity<UserIdentityUserToken>().ToTable(_schemaConfiguration.IdentityUserTokens);
     }
 }
