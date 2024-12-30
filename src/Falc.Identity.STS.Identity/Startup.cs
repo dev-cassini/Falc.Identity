@@ -6,13 +6,13 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Falc.Identity.Admin.EntityFramework.Shared.DbContexts;
-using Falc.Identity.Admin.EntityFramework.Shared.Entities.Identity;
 using Skoruba.Duende.IdentityServer.Shared.Configuration.Helpers;
 using Falc.Identity.STS.Identity.Configuration;
 using Falc.Identity.STS.Identity.Configuration.Constants;
 using Falc.Identity.STS.Identity.Configuration.Interfaces;
 using Falc.Identity.STS.Identity.Helpers;
+using Skoruba.Duende.IdentityServer.Admin.EntityFramework.Shared.DbContexts;
+using Skoruba.Duende.IdentityServer.Admin.EntityFramework.Shared.Entities.Identity;
 
 namespace Falc.Identity.STS.Identity
 {

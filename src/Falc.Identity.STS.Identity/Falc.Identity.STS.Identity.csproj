@@ -48,7 +48,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Falc.Identity.Admin.EntityFramework.Shared\Falc.Identity.Admin.EntityFramework.Shared.csproj" />
         <ProjectReference Include="..\Falc.Identity.Shared\Falc.Identity.Shared.csproj" />
     </ItemGroup>
 

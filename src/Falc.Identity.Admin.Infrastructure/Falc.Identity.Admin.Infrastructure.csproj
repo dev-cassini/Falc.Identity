@@ -7,11 +7,14 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="MassTransit.RabbitMQ" Version="8.3.4" />
+        <PackageReference Include="MassTransit.RabbitMQ" Version="8.3.4" />
+        <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="8.0.6" />
+        <PackageReference Include="Skoruba.AuditLogging.EntityFramework" Version="1.1.0" />
+        <PackageReference Include="Skoruba.Duende.IdentityServer.Admin.EntityFramework.Configuration" Version="2.3.0" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Falc.Identity.Admin.EntityFramework.PostgreSQL\Falc.Identity.Admin.EntityFramework.PostgreSQL.csproj" />
+        <Folder Include="EntityFramework\" />
     </ItemGroup>
 
 </Project>

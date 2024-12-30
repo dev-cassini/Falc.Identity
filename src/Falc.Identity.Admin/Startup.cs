@@ -10,9 +10,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Skoruba.AuditLogging.EntityFramework.Entities;
-using Falc.Identity.Admin.EntityFramework.Shared.DbContexts;
-using Falc.Identity.Admin.EntityFramework.Shared.Entities.Identity;
 using Falc.Identity.Admin.Helpers;
+using Falc.Identity.Admin.Infrastructure.EntityFramework.DbContexts;
+using Falc.Identity.Admin.Infrastructure.EntityFramework.Entities.Identity;
 using Skoruba.Duende.IdentityServer.Admin.UI.Helpers.ApplicationBuilder;
 using Skoruba.Duende.IdentityServer.Admin.UI.Helpers.DependencyInjection;
 using Skoruba.Duende.IdentityServer.Shared.Configuration.Helpers;
@@ -20,8 +20,6 @@ using Falc.Identity.Shared.Dtos;
 using Falc.Identity.Shared.Dtos.Identity;
 
 namespace Falc.Identity.Admin;
-
-using PostgreSQLMigrationAssembly = Falc.Identity.Admin.EntityFramework.PostgreSQL.Helpers.MigrationAssembly;
     
 public class Startup
 {
@@ -81,7 +79,7 @@ public class Startup
         }
 
         // Set migration assembly for application of db migrations
-        var migrationsAssembly = typeof(PostgreSQLMigrationAssembly).GetTypeInfo().Assembly.GetName().Name;
+        var migrationsAssembly = typeof(Infrastructure.Marker).GetTypeInfo().Assembly.GetName().Name;
         options.DatabaseMigrations.SetMigrationsAssemblies(migrationsAssembly);
 
         // Use production DbContexts and auth services.
