@@ -3,10 +3,6 @@
 
 using Skoruba.Duende.IdentityServer.Admin.BusinessLogic.Identity.Dtos.Identity;
 
-namespace Falc.Identity.Shared.Dtos.Identity
-{
-    public class IdentityUserDto : UserDto<string>
-    {
-        
-    }
-}
+namespace Falc.Identity.Shared.Dtos.Identity;
+
+public class IdentityUserDto : UserDto<string>;
