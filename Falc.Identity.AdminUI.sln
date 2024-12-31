@@ -25,6 +25,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "solution-items", "solution-
 		.gitignore = .gitignore
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{AAA827DE-0268-449C-942B-B93366CC372D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{CA5575AF-B8E7-408C-9588-A960D36DBF82}"
+    ProjectSection(SolutionItems) = preProject
+		ci.yml = ./.github/workflows/ci.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -133,5 +140,6 @@ Global
 		{78D8087B-D5DD-44CA-902A-8288132AA36E} = {311CD16C-18A4-4363-8508-94964426C578}
 		{9932063B-DF54-48DE-8053-69CFB9926804} = {311CD16C-18A4-4363-8508-94964426C578}
 		{F7FD11C9-C5C3-4D1E-9469-3A6504EA306C} = {311CD16C-18A4-4363-8508-94964426C578}
+		{CA5575AF-B8E7-408C-9588-A960D36DBF82} = {AAA827DE-0268-449C-942B-B93366CC372D}
 	EndGlobalSection
 EndGlobal
