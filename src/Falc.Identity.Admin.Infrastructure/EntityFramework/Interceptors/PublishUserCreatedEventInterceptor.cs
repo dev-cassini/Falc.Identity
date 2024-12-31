@@ -1,5 +1,5 @@
 using Falc.Identity.Admin.Infrastructure.EntityFramework.Entities.Identity;
-using Falc.Identity.Admin.Infrastructure.Events;
+using Falc.Identity.Contracts;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
