@@ -9,6 +9,7 @@ WORKDIR /src
 
 COPY ["src/Falc.Identity.Admin/Falc.Identity.Admin.csproj", "src/Falc.Identity.Admin/"]
 COPY ["src/Falc.Identity.Admin.Infrastructure/Falc.Identity.Admin.Infrastructure.csproj", "src/Falc.Identity.Admin.Infrastructure/"]
+COPY ["src/Falc.Identity.Contracts/Falc.Identity.Contracts.csproj", "src/Falc.Identity.Contracts/"]
 COPY ["src/Falc.Identity.Shared/Falc.Identity.Shared.csproj", "src/Falc.Identity.Shared/"]
 RUN dotnet restore -a $TARGETARCH "src/Falc.Identity.Admin/Falc.Identity.Admin.csproj"
 COPY . .

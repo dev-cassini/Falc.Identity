@@ -8,6 +8,7 @@ ARG TARGETARCH
 WORKDIR /src
 COPY ["src/Falc.Identity.Admin.Api/Falc.Identity.Admin.Api.csproj", "src/Falc.Identity.Admin.Api/"]
 COPY ["src/Falc.Identity.Admin.Infrastructure/Falc.Identity.Admin.Infrastructure.csproj", "src/Falc.Identity.Admin.Infrastructure/"]
+COPY ["src/Falc.Identity.Contracts/Falc.Identity.Contracts.csproj", "src/Falc.Identity.Contracts/"]
 COPY ["src/Falc.Identity.Shared/Falc.Identity.Shared.csproj", "src/Falc.Identity.Shared/"]
 RUN dotnet restore -a $TARGETARCH "src/Falc.Identity.Admin.Api/Falc.Identity.Admin.Api.csproj"
 COPY . .
