@@ -63,8 +63,8 @@
         ],
         "ApiScopes": [
             {
-                "Name": "FalcIdentity_api",
-                "DisplayName": "FalcIdentity_api",
+                "Name": "falc-identity-api:admin",
+                "DisplayName": "FALC Identity API - Admin",
                 "Required": true,
                 "UserClaims": [
                     "role",
@@ -74,59 +74,38 @@
         ],
         "ApiResources": [
             {
-                "Name": "FalcIdentity_api",
+                "Name": "falc-identity-api:admin",
                 "Scopes": [
-                    "FalcIdentity_api"
+                    "falc-identity-api:admin"
                 ]
             }
         ],
         "Clients": [
             {
-                "ClientId": "FalcIdentity",
-                "ClientName": "Falc Identity",
-                "ClientUri": "https://localhost:44303",
-                "AllowedGrantTypes": [
-                    "authorization_code"
-                ],
-                "RequirePkce": true,
-                "ClientSecrets": [
-                    {
-                        "Value": "d1810329-ed0b-41a4-8202-5f1ec984efe2"
-                    }
-                ],
-                "RedirectUris": [
-                    "https://localhost:44303/signin-oidc"
-                ],
-                "FrontChannelLogoutUri": "https://localhost:44303/signout-oidc",
-                "PostLogoutRedirectUris": [
-                    "https://localhost:44303/signout-callback-oidc"
-                ],
-                "AllowedCorsOrigins": [
-                    "https://localhost:44303"
-                ],
-                "AllowedScopes": [
-                    "openid",
-                    "email",
-                    "profile",
-                    "roles"
-                ]
-            },
-            {
-                "ClientId": "FalcIdentity_api_swaggerui",
-                "ClientName": "FalcIdentity_api_swaggerui",
+                "ClientId": "FalcPlatform",
+                "ClientName": "FALC Platform",
+                "ClientUri": "https://localhost:4200",
                 "AllowedGrantTypes": [
                     "authorization_code"
                 ],
                 "RequireClientSecret": false,
                 "RequirePkce": true,
                 "RedirectUris": [
-                    "https://localhost:44302/swagger/oauth2-redirect.html"
+                    "https://localhost:4200/callback"
                 ],
-                "AllowedScopes": [
-                    "FalcIdentity_api"
+                "PostLogoutRedirectUris": [
+                    "https://localhost:4200"
                 ],
                 "AllowedCorsOrigins": [
-                    "https://localhost:44302"
+                    "https://localhost:4200"
+                ],
+                "AllowedScopes": [
+                    "openid",
+                    "email",
+                    "profile",
+                    "roles",
+                    "offline_access",
+                    "falc-identity:me"
                 ]
             }
         ]

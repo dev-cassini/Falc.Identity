@@ -3,20 +3,102 @@
     "Roles": [
       {
         "Name": "Identity Admin"
+      },
+      {
+        "Name": "Platform Admin"
+      },
+      {
+        "Name": "Customer"
       }
     ],
     "Users": [
       {
-        "Username": "admin",
+        "Username": "identity.admin",
         "Password": "Pa$$word123",
-        "Email": "ryan.dremza@gmail.com",
+        "Email": "ryan.dremza+falc.identity.admin@gmail.com",
         "Roles": [
           "Identity Admin"
         ],
         "Claims": [
           {
             "Type": "name",
-            "Value": "admin"
+            "Value": "Identity Admin"
+          },
+          {
+            "Type": "email",
+            "Value": "ryan.dremza+falc.identity.admin@gmail.com"
+          },
+          {
+            "Type": "preferred_username",
+            "Value": "identity.admin"
+          },
+          {
+            "Type": "given_name",
+            "Value": "Identity"
+          },
+          {
+            "Type": "family_name",
+            "Value": "Admin"
+          }
+        ]
+      },
+      {
+        "Username": "platform.admin",
+        "Password": "Pa$$word123",
+        "Email": "ryan.dremza+falc.platform.admin@gmail.com",
+        "Roles": [
+          "Platform Admin"
+        ],
+        "Claims": [
+          {
+            "Type": "name",
+            "Value": "Platform Admin"
+          },
+          {
+            "Type": "email",
+            "Value": "ryan.dremza+falc.platform.admin@gmail.com"
+          },
+          {
+            "Type": "preferred_username",
+            "Value": "platform.admin"
+          },
+          {
+            "Type": "given_name",
+            "Value": "Platform"
+          },
+          {
+            "Type": "family_name",
+            "Value": "Admin"
+          }
+        ]
+      },
+      {
+        "Username": "karl.marx",
+        "Password": "Pa$$word123",
+        "Email": "ryan.dremza+falc.customer.1@gmail.com",
+        "Roles": [
+          "Customer"
+        ],
+        "Claims": [
+          {
+            "Type": "name",
+            "Value": "Karl Marx"
+          },
+          {
+            "Type": "email",
+            "Value": "ryan.dremza+falc.customer.1@gmail.com"
+          },
+          {
+            "Type": "preferred_username",
+            "Value": "karl.marx"
+          },
+          {
+            "Type": "given_name",
+            "Value": "Karl"
+          },
+          {
+            "Type": "family_name",
+            "Value": "Marx"
           }
         ]
       }
