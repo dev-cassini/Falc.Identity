@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Falc.Identity.Admin.Api.Controllers;
 
 [ApiController]
-[Route("sign-up")]
+[Route("api/sign-up")]
 public class SignUpController(UserManager<UserIdentity> userManager) : ControllerBase
 {
     [HttpPost("users")]
